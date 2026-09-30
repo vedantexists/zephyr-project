@@ -28,26 +28,26 @@ export const DigestView: React.FC<DigestViewProps> = ({
   const [copied, setCopied] = useState(false);
 
   const copyWhatsAppDispatch = () => {
-    const text = `📢 *CAMPUS MESS FEEDBACK DIGEST*
-📅 *Shift Summary:* ${new Date().toLocaleDateString()} (${digest.generatedAt})
-📊 *Score:* ${digest.overallRating.toFixed(1)}/5.0 (+${digest.wowDelta.toFixed(1)} WoW) | 👥 ${digest.totalSubmissions} Meals | 🛡️ ${digest.blockedCount} Blocked
+    const text = `*CAMPUS MESS SHIFT BRIEFING*
+*Date:* ${new Date().toLocaleDateString()} (${digest.generatedAt})
+*Rating:* ${digest.overallRating.toFixed(1)}/5.0 (+${digest.wowDelta.toFixed(1)} WoW) | ${digest.totalSubmissions} Meals Logged | ${digest.blockedCount} Spam Filtered
 
-🔴 *TOP BOTTLENECK:*
+*PRIMARY BOTTLENECK:*
 ${digest.topClusters[0]?.title || 'None'}
-↳ Quote: "${digest.topClusters[0]?.representativeQuote || ''}"
-↳ Directive: ${digest.topClusters[0]?.recommendedAction || ''}
+- Diner note: "${digest.topClusters[0]?.representativeQuote || ''}"
+- Directive: ${digest.topClusters[0]?.recommendedAction || ''}
 
-⚠️ *SECONDARY ISSUE:*
+*SECONDARY BOTTLENECK:*
 ${digest.topClusters[1]?.title || 'None'}
-↳ Directive: ${digest.topClusters[1]?.recommendedAction || ''}
+- Directive: ${digest.topClusters[1]?.recommendedAction || ''}
 
-✅ *KITCHEN ACTIONS:*
-${digest.actionChecklist.map(a => `◻️ [${a.role}] ${a.directive} (${a.urgency})`).join('\n')}
+*KITCHEN TASKS:*
+${digest.actionChecklist.map(a => `[ ] (${a.role}) ${a.directive} [${a.urgency}]`).join('\n')}
 
-🌟 *STAFF PRAISE:*
-${digest.positives[0] || 'Good shift operation.'}
+*DINER COMMENDATIONS:*
+${digest.positives[0] || 'Standard meal shift completed without incident.'}
 
-_Generated via ZephyrMess AI Dining Intelligence_`;
+Generated via ZephyrMess Dining Platform`;
 
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -58,19 +58,19 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       
       {/* 1. Header & Headline Card */}
-      <div className="glass-panel" style={{ padding: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1rem' }}>
+      <div className="glass-panel" style={{ padding: '1.5rem 1.75rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem', marginBottom: '1.2rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
               <span className="badge badge-emerald">
-                <Sparkles size={11} /> Weekly Dining Summary
+                <Sparkles size={11} /> Weekly shift summary
               </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                Updated {digest.generatedAt}
+              <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)' }}>
+                Updated at {digest.generatedAt}
               </span>
             </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 800 }}>
-              Campus Dining Weekly Report
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>
+              Weekly dining digest
             </h2>
           </div>
 
@@ -78,10 +78,10 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
             <button 
               className="btn btn-emerald btn-sm"
               onClick={copyWhatsAppDispatch}
-              title="Copy formatted WhatsApp message for Kitchen Staff group"
+              title="Copy formatted summary for staff WhatsApp group"
             >
               {copied ? <Check size={14} /> : <Copy size={14} />}
-              <span>{copied ? 'Copied Dispatch!' : 'Copy WhatsApp Dispatch'}</span>
+              <span>{copied ? 'Copied update' : 'Copy WhatsApp update'}</span>
             </button>
 
             <button 
@@ -90,36 +90,36 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
               title="Print shift handover briefing"
             >
               <Printer size={14} />
-              <span>Print Handover</span>
+              <span>Print handover</span>
             </button>
 
             <button 
               className="btn btn-primary btn-sm"
               onClick={onRefresh}
-              title="Recalculate digest from updated dataset"
+              title="Recalculate metrics from latest submissions"
             >
               <Sparkles size={14} />
-              <span>Recalculate</span>
+              <span>Update metrics</span>
             </button>
           </div>
         </div>
 
         {/* Headline (One sentence, computed facts) */}
         <div style={{ 
-          padding: '0.9rem 1.1rem',
+          padding: '1rem 1.25rem',
           borderRadius: 'var(--radius-md)',
-          background: 'rgba(99, 102, 241, 0.1)',
+          background: 'var(--primary-subtle)',
           borderLeft: '4px solid var(--primary-light)',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.75rem'
+          gap: '0.85rem'
         }}>
-          <ChefHat size={22} color="#818cf8" style={{ flexShrink: 0 }} />
+          <ChefHat size={22} color="var(--primary-light)" style={{ flexShrink: 0 }} />
           <div>
             <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Executive Bottom Line:
+              Shift briefing summary:
             </span>
-            <p style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-main)', marginTop: '0.1rem', lineHeight: 1.4 }}>
+            <p style={{ fontSize: '0.94rem', fontWeight: 600, color: 'var(--text-main)', marginTop: '0.15rem', lineHeight: 1.45 }}>
               {digest.headline}
             </p>
           </div>
@@ -133,17 +133,17 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '1.25rem' }}>
         
         {/* Top 3 Grievance Clusters */}
-        <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        <div className="glass-panel" style={{ padding: '1.35rem', display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 800 }}>
-              Top 3 Recurring Bottlenecks
+            <h4 style={{ fontSize: '1rem', fontWeight: 800 }}>
+              Priority kitchen bottlenecks
             </h4>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
-              Ranked by severity score formula
+              Ranked by frequency, student ratings, and keywords
             </span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
             {digest.topClusters.map(c => (
               <ClusterCard key={c.id} cluster={c} />
             ))}
@@ -151,26 +151,26 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
         </div>
 
         {/* Action Checklist & Anomalies */}
-        <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div className="glass-panel" style={{ padding: '1.35rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Action Checklist */}
           <ActionChecklist initialActions={digest.actionChecklist} />
 
           {/* 4. Anomalies Card */}
           {digest.anomalies.length > 0 && (
             <div style={{ 
-              background: 'rgba(244, 63, 94, 0.06)', 
-              border: '1px solid rgba(244, 63, 94, 0.25)', 
+              background: 'var(--rose-subtle)', 
+              border: '1px solid rgba(244, 63, 94, 0.3)', 
               borderRadius: 'var(--radius-md)', 
-              padding: '0.85rem 1rem' 
+              padding: '0.95rem 1.1rem' 
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#fb7185', marginBottom: '0.4rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--rose-light)', marginBottom: '0.45rem' }}>
                 <AlertTriangle size={15} />
-                <strong style={{ fontSize: '0.85rem' }}>Meal-Day Rating Anomalies (&gt;0.6 below mean)</strong>
+                <strong style={{ fontSize: '0.86rem' }}>Low-scoring meal services (ratings &gt;0.6 below weekly average)</strong>
               </div>
-              <ul style={{ paddingLeft: '1.2rem', fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+              <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                 {digest.anomalies.map((anom, idx) => (
                   <li key={idx}>
-                    <strong>{anom.day} {anom.meal}</strong> ({anom.avgRating.toFixed(1)}/5.0, {anom.deltaFromMean} delta): {anom.issue}
+                    <strong style={{ color: 'var(--text-main)' }}>{anom.day} {anom.meal}</strong> ({anom.avgRating.toFixed(1)}/5.0, {anom.deltaFromMean} below mean): {anom.issue}
                   </li>
                 ))}
               </ul>
@@ -179,16 +179,16 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
 
           {/* 6. Positives Card */}
           <div style={{ 
-            background: 'rgba(16, 185, 129, 0.08)', 
-            border: '1px solid rgba(16, 185, 129, 0.25)', 
+            background: 'var(--emerald-subtle)', 
+            border: '1px solid rgba(16, 185, 129, 0.3)', 
             borderRadius: 'var(--radius-md)', 
-            padding: '0.85rem 1rem' 
+            padding: '0.95rem 1.1rem' 
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#34d399', marginBottom: '0.4rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--emerald-light)', marginBottom: '0.45rem' }}>
               <CheckCircle2 size={15} />
-              <strong style={{ fontSize: '0.85rem' }}>Kitchen Staff Commendations</strong>
+              <strong style={{ fontSize: '0.86rem' }}>Kitchen commendations</strong>
             </div>
-            <ul style={{ paddingLeft: '1.2rem', fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+            <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
               {digest.positives.map((p, idx) => (
                 <li key={idx}>{p}</li>
               ))}

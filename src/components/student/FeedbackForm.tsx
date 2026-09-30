@@ -46,7 +46,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const [rawRoll, setRawRoll] = useState<string>('23CS104');
   const [studentHash, setStudentHash] = useState<string>('7a9f02c1b84e');
   const [meal, setMeal] = useState<Meal>(prefill?.meal || getAutoMeal());
-  const [day, setDay] = useState<Day>(prefill?.day || getAutoDay());
+  const [day] = useState<Day>(prefill?.day || getAutoDay());
   const [rating, setRating] = useState<1 | 2 | 3 | 4 | 5 | null>(prefill?.rating || null);
   const [quickTags, setQuickTags] = useState<string[]>(prefill?.quickTags || []);
   const [comment, setComment] = useState<string>(prefill?.comment || '');
@@ -185,34 +185,36 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   ];
 
   return (
-    <div style={{ maxWidth: '580px', margin: '0 auto', width: '100%' }}>
-      <div className="glass-panel" style={{ padding: '1.75rem' }}>
+    <div style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
+      <div className="glass-panel" style={{ padding: '1.75rem 2rem' }}>
         
         {/* Header */}
-        <div style={{ marginBottom: '1.25rem' }}>
-          <h2 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Student Meal Feedback</h2>
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Rate your meal and help us improve campus dining.</p>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)' }}>Rate your meal</h2>
+          <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+            Takes under 15 seconds. Feedback updates tomorrow's kitchen preparation.
+          </p>
         </div>
 
         {/* Spam Shield Block Alert */}
         {blockedAlert && (
           <div style={{ 
-            background: 'rgba(244, 63, 94, 0.15)', 
+            background: 'var(--rose-subtle)', 
             border: '1px solid rgba(244, 63, 94, 0.4)', 
             borderRadius: 'var(--radius-md)', 
             padding: '0.85rem 1rem', 
             marginBottom: '1.25rem',
             display: 'flex',
             alignItems: 'flex-start',
-            gap: '0.6rem',
-            color: '#fecdd3'
+            gap: '0.65rem',
+            color: 'var(--rose-light)'
           }}>
             <ShieldAlert size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
             <div>
-              <strong style={{ display: 'block', fontSize: '0.88rem', color: '#fb7185' }}>
-                🛡️ Spam Shield Active
+              <strong style={{ display: 'block', fontSize: '0.88rem', color: 'var(--rose-light)' }}>
+                Submission limit reached
               </strong>
-              <span style={{ fontSize: '0.82rem' }}>{blockedAlert}</span>
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-main)' }}>{blockedAlert}</span>
             </div>
           </div>
         )}
@@ -220,46 +222,51 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
         {/* Submission Success Confirmation */}
         {successSub && (
           <div style={{ 
-            background: 'rgba(16, 185, 129, 0.15)', 
+            background: 'var(--emerald-subtle)', 
             border: '1px solid rgba(16, 185, 129, 0.4)', 
             borderRadius: 'var(--radius-md)', 
-            padding: '1rem', 
+            padding: '1.1rem', 
             marginBottom: '1.25rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#34d399' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--emerald-light)' }}>
               <CheckCircle2 size={18} />
-              <strong style={{ fontSize: '0.95rem' }}>Feedback submitted!</strong>
-              <span className="badge badge-emerald" style={{ marginLeft: 'auto' }}>Logged</span>
+              <strong style={{ fontSize: '0.96rem' }}>Feedback logged</strong>
+              <span className="badge badge-emerald" style={{ marginLeft: 'auto' }}>Saved</span>
             </div>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Thank you — your feedback helps improve campus dining for everyone.
+            <p style={{ fontSize: '0.83rem', color: 'var(--text-muted)' }}>
+              Saved. Your notes are included in the shift handover report.
             </p>
-            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
               <button className="btn btn-outline btn-sm" onClick={handleReset}>
-                <RotateCcw size={12} /> Rate Another
+                <RotateCcw size={12} /> Rate another meal
               </button>
             </div>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem' }}>
           
-          {/* Meal Window Row */}
+          {/* Meal Service Selection */}
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Meal Window (Auto-selected):
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.4rem', marginTop: '0.4rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Meal service:
+              </label>
+              <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)' }}>
+                {day} &bull; Auto-detected
+              </span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.45rem' }}>
               {(['Breakfast', 'Lunch', 'Snacks', 'Dinner'] as Meal[]).map((m) => (
                 <button
                   type="button"
                   key={m}
                   onClick={() => handleChangeMeal(m)}
                   className={`btn ${meal === m ? 'btn-primary' : 'btn-outline'}`}
-                  style={{ padding: '0.45rem 0.2rem', fontSize: '0.8rem', justifyContent: 'center' }}
+                  style={{ padding: '0.5rem 0.2rem', fontSize: '0.82rem', justifyContent: 'center' }}
                 >
                   {m}
                 </button>
@@ -269,12 +276,12 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
           {/* Dish Picker — today's menu for the selected meal */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.45rem' }}>
               <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                Today's {meal} Menu:
+                Menu for {meal}:
               </label>
               {selectedDishes.length > 0 && (
-                <span style={{ fontSize: '0.7rem', color: 'var(--primary-light)', fontWeight: 600 }}>
+                <span className="badge badge-emerald" style={{ fontSize: '0.68rem' }}>
                   {selectedDishes.length} selected
                 </span>
               )}
@@ -290,7 +297,8 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
                     className={`tag-pill ${isSelected ? 'active' : ''}`}
                     style={{
                       borderColor: isSelected ? 'var(--emerald)' : undefined,
-                      background: isSelected ? 'rgba(16,185,129,0.12)' : undefined
+                      background: isSelected ? 'var(--emerald-subtle)' : undefined,
+                      color: isSelected ? 'var(--emerald-light)' : undefined
                     }}
                   >
                     <UtensilsCrossed size={11} />
@@ -300,25 +308,25 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
               })}
             </div>
             {selectedDishes.length > 0 && (
-              <p style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '0.3rem' }}>
-                Rating applies to: <em>{selectedDishes.join(', ')}</em>
+              <p style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '0.35rem' }}>
+                Selected dishes: <strong style={{ color: 'var(--text-main)', fontWeight: 600 }}>{selectedDishes.join(', ')}</strong>
               </p>
             )}
           </div>
 
           {/* 5-Tap Rating Target Scale */}
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.45rem' }}>
               <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                Tap to Rate:
+                Tap to rate:
               </label>
               {rating && (
-                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: rating <= 2 ? '#fb7185' : rating === 3 ? '#fbbf24' : '#34d399' }}>
-                  {rating === 1 && '1/5 — Terrible'}
-                  {rating === 2 && '2/5 — Poor'}
-                  {rating === 3 && '3/5 — Average'}
-                  {rating === 4 && '4/5 — Good'}
-                  {rating === 5 && '5/5 — Loved It!'}
+                <span style={{ fontSize: '0.84rem', fontWeight: 700, color: rating <= 2 ? 'var(--rose-light)' : rating === 3 ? 'var(--saffron-light)' : 'var(--emerald-light)' }}>
+                  {rating === 1 && '1/5: Terrible'}
+                  {rating === 2 && '2/5: Poor'}
+                  {rating === 3 && '3/5: Average'}
+                  {rating === 4 && '4/5: Good'}
+                  {rating === 5 && '5/5: Great'}
                 </span>
               )}
             </div>
@@ -346,8 +354,8 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
           {/* Quick Tags Cloud */}
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Optional Quick Tags:
+            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '0.45rem' }}>
+              Common issues (optional):
             </label>
             <div className="tags-cloud">
               {tagsList.map((tag) => {
@@ -360,7 +368,8 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
                     onClick={() => toggleQuickTag(tag)}
                     className={`tag-pill ${isSelected ? 'active' : ''}`}
                     style={{
-                      borderColor: isSelected ? (isPositive ? 'var(--emerald)' : 'var(--primary-light)') : undefined
+                      borderColor: isSelected ? (isPositive ? 'var(--emerald)' : 'var(--primary-light)') : undefined,
+                      color: isSelected ? (isPositive ? 'var(--emerald-light)' : '#c7d2fe') : undefined
                     }}
                   >
                     <Tag size={11} />
@@ -371,10 +380,10 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
             </div>
           </div>
 
-          {/* Optional Multilingual / Hinglish Comment */}
+          {/* Multilingual / Hinglish Comment */}
           <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '0.35rem' }}>
-              Optional Comment (English or Hinglish):
+            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '0.45rem' }}>
+              Add details (English, Hindi, or Hinglish):
             </label>
             <input
               type="text"
@@ -384,49 +393,52 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 startStopwatchIfNeeded();
                 setComment(e.target.value);
               }}
-              placeholder="e.g. Chole me namak bilkul nahi tha aur chawal khatam 1:15 pm..."
+              placeholder="e.g., Dal was too watery today, or chole me namak kam tha..."
               style={{
                 width: '100%',
-                padding: '0.75rem 0.9rem',
+                padding: '0.8rem 1rem',
                 borderRadius: 'var(--radius-md)',
                 background: 'var(--bg-surface-elevated)',
                 border: '1px solid var(--bg-card-border)',
                 color: 'var(--text-main)',
                 fontFamily: 'inherit',
-                fontSize: '0.85rem'
+                fontSize: '0.88rem'
               }}
             />
           </div>
 
           {/* Student Roll Number — anonymous, no hash shown */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderTop: '1px solid var(--bg-card-border)', paddingTop: '0.6rem' }}>
-            <Hash size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-            <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', flexShrink: 0 }}>Roll No:</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', borderTop: '1px solid var(--bg-card-border)', paddingTop: '0.75rem' }}>
+            <Hash size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+            <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', flexShrink: 0 }}>Roll number:</label>
             <input
               type="text"
               value={rawRoll}
               onChange={e => setRawRoll(e.target.value)}
               style={{
-                padding: '0.2rem 0.4rem',
-                fontSize: '0.78rem',
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.8rem',
                 borderRadius: 'var(--radius-sm)',
                 background: 'var(--bg-surface-elevated)',
                 border: '1px solid var(--bg-card-border)',
                 color: 'var(--text-main)',
-                width: '90px'
+                width: '95px',
+                fontFamily: 'var(--font-mono)'
               }}
             />
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>Your identity is anonymised before storage.</span>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
+              Anonymized using one-way cryptographic hashing.
+            </span>
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ width: '100%', padding: '0.85rem', fontSize: '0.95rem', fontWeight: 700 }}
+            style={{ width: '100%', padding: '0.9rem', fontSize: '0.98rem', fontWeight: 700 }}
           >
             <Send size={16} />
-            <span>Submit Feedback</span>
+            <span>Submit feedback</span>
           </button>
         </form>
 

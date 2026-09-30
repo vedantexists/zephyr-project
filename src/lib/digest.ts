@@ -1,4 +1,4 @@
-import type { Submission, Cluster, Digest, ActionItem, Pillar } from '../types';
+import type { Submission, Cluster, Digest, ActionItem, Pillar, Day } from '../types';
 import { calculateStats } from './stats';
 import { clusterSingleLinkage, type ClusterableItem } from './similarity';
 import { embedNgram } from '../ai/ngramEmbedder';

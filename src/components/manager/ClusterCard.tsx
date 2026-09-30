@@ -12,27 +12,27 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({ cluster }) => {
 
   return (
     <div className="cluster-card" style={{
-      borderLeft: `4px solid ${isCritical ? 'var(--rose)' : isHigh ? 'var(--amber)' : 'var(--primary-light)'}`
+      borderLeft: `4px solid ${isCritical ? 'var(--rose)' : isHigh ? 'var(--saffron)' : 'var(--primary-light)'}`
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.6rem', flexWrap: 'wrap' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
-            <span className={`badge badge-${isCritical ? 'rose' : isHigh ? 'amber' : 'indigo'}`}>
-              {cluster.severity.toUpperCase()} ({cluster.count} reports)
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+            <span className={`badge badge-${isCritical ? 'rose' : isHigh ? 'amber' : 'indigo'}`} style={{ textTransform: 'capitalize' }}>
+              {cluster.severity} priority &bull; {cluster.count} reports
             </span>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
-              Score: {cluster.severityScore}
+            <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
+              Severity score: {cluster.severityScore}
             </span>
           </div>
-          <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-main)' }}>
+          <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.3 }}>
             {cluster.title}
           </h4>
         </div>
 
         {cluster.medianTime && (
-          <span className="badge badge-amber" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <Clock size={11} />
-            Median: {cluster.medianTime}
+          <span className="badge badge-amber" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <Clock size={12} />
+            Median time: {cluster.medianTime}
           </span>
         )}
       </div>
@@ -46,15 +46,16 @@ export const ClusterCard: React.FC<ClusterCardProps> = ({ cluster }) => {
       <div style={{ 
         display: 'flex', 
         alignItems: 'flex-start', 
-        gap: '0.45rem', 
-        fontSize: '0.8rem', 
-        background: 'rgba(0, 0, 0, 0.2)', 
-        padding: '0.5rem 0.75rem', 
+        gap: '0.5rem', 
+        fontSize: '0.82rem', 
+        background: 'var(--bg-surface)', 
+        border: '1px solid var(--bg-card-border)',
+        padding: '0.6rem 0.85rem', 
         borderRadius: 'var(--radius-sm)' 
       }}>
-        <CheckCircle size={14} color="#34d399" style={{ flexShrink: 0, marginTop: '2px' }} />
+        <CheckCircle size={15} color="var(--emerald-light)" style={{ flexShrink: 0, marginTop: '2px' }} />
         <span>
-          <strong style={{ color: '#34d399' }}>Action: </strong>
+          <strong style={{ color: 'var(--emerald-light)', fontWeight: 700 }}>Action directive: </strong>
           {cluster.recommendedAction}
         </span>
       </div>

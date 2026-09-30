@@ -41,7 +41,7 @@ export function App() {
     setToasts(prev => [...prev, { ...t, id }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(item => item.id !== id));
-    }, 4500);
+    }, 4000);
   };
 
   const handleSubmissionSuccess = (_newSub: Submission) => {
@@ -49,8 +49,8 @@ export function App() {
     setDigest(store.refreshDigest());
     addToast({
       type: 'success',
-      title: 'Feedback received — thank you!',
-      message: 'Your rating has been logged and will inform tomorrow\'s kitchen briefing.'
+      title: 'Feedback logged',
+      message: 'Your notes will be included in the kitchen shift briefing.'
     });
   };
 
@@ -59,8 +59,8 @@ export function App() {
     setDigest(updated);
     addToast({
       type: 'success',
-      title: 'Digest Updated',
-      message: `Analysed ${updated.totalSubmissions} meal responses this week.`
+      title: 'Digest updated',
+      message: `Analyzed ${updated.totalSubmissions} meal responses for this week.`
     });
   };
 
@@ -76,8 +76,8 @@ export function App() {
     setShowResetConfirm(false);
     addToast({
       type: 'warning',
-      title: 'Dataset Re-initialized',
-      message: 'Loaded default 900 current week + 650 prior week submissions.'
+      title: 'Data reset',
+      message: 'Restored the default 900 current week and 650 prior week records.'
     });
   };
 
@@ -93,8 +93,8 @@ export function App() {
       setActiveTab('student');
       addToast({
         type: 'warning',
-        title: 'Test Case 1 Loaded (Tuesday Dinner)',
-        message: 'Prefilled with watery dal & cold chapati comment (Rating: 2/5).'
+        title: 'Loaded Test Case 1: Tuesday Dinner',
+        message: 'Prefilled with watery dal and cold chapati report (Rating: 2/5).'
       });
     } else if (caseNum === 2) {
       setPrefill({
@@ -107,8 +107,8 @@ export function App() {
       setActiveTab('student');
       addToast({
         type: 'warning',
-        title: 'Test Case 2 Loaded (Wednesday Lunch Hinglish)',
-        message: 'Prefilled with Hinglish chole namak & 1:15pm stockout (Rating: 1/5).'
+        title: 'Loaded Test Case 2: Wednesday Lunch (Hinglish)',
+        message: 'Prefilled with Hinglish chole namak and 1:15pm stockout (Rating: 1/5).'
       });
     } else if (caseNum === 3) {
       setActiveTab('manager');
@@ -127,28 +127,28 @@ export function App() {
           </div>
           <div>
             <h1 className="brand-title">ZephyrMess</h1>
-            <p className="nav-tagline">Mess Feedback Digest &amp; NLP Dining Analytics</p>
+            <p className="nav-tagline">Dining feedback and kitchen shift digest</p>
           </div>
         </div>
 
         {/* 2 Main Personas Tabs */}
-        <nav className="nav-tabs">
+        <nav className="nav-tabs" aria-label="Main Views">
           <button
             className={`nav-tab-btn ${activeTab === 'student' ? 'active' : ''}`}
             onClick={() => setActiveTab('student')}
-            title="Student Feedback"
+            title="Submit dining feedback"
           >
             <Zap size={15} />
-            <span>Student Rating</span>
+            <span>Diner feedback</span>
           </button>
 
           <button
             className={`nav-tab-btn ${activeTab === 'manager' ? 'active' : ''}`}
             onClick={() => setActiveTab('manager')}
-            title="Manager Executive Digest"
+            title="View kitchen shift digest"
           >
             <Sparkles size={15} />
-            <span>Manager Digest</span>
+            <span>Shift digest</span>
           </button>
         </nav>
 
@@ -157,9 +157,10 @@ export function App() {
           <button
             className="btn btn-outline btn-sm"
             onClick={handleResetData}
-            title="Reset dataset back to 900+ seed submissions"
+            title="Reset data to initial sample submissions"
           >
             <RotateCcw size={14} />
+            <span style={{ fontSize: '0.74rem' }}>Reset data</span>
           </button>
 
           <button
@@ -171,6 +172,50 @@ export function App() {
           </button>
         </div>
       </header>
+
+      {/* Live Dining Pulse & Test Case Presets */}
+      <div className="pulse-bar">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--emerald-light)', fontWeight: 600 }}>
+            <span className="pulse-dot" />
+            Active Service Window
+          </span>
+          <span style={{ color: 'var(--text-dim)' }}>|</span>
+          <span style={{ color: 'var(--text-muted)' }}>
+            <strong>{submissions.length}</strong> verified meal responses logged this week
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', fontWeight: 600 }}>
+            Judge presets:
+          </span>
+          <button 
+            className="btn btn-outline btn-sm" 
+            style={{ fontSize: '0.72rem', padding: '0.25rem 0.55rem' }}
+            onClick={() => handleLoadTestCase(1)}
+            title="Load Tuesday Dinner Watery Dal case"
+          >
+            Case 1: Tue Dinner
+          </button>
+          <button 
+            className="btn btn-outline btn-sm" 
+            style={{ fontSize: '0.72rem', padding: '0.25rem 0.55rem' }}
+            onClick={() => handleLoadTestCase(2)}
+            title="Load Wednesday Lunch Hinglish Namak/Stockout case"
+          >
+            Case 2: Wed Lunch
+          </button>
+          <button 
+            className="btn btn-emerald btn-sm" 
+            style={{ fontSize: '0.72rem', padding: '0.25rem 0.55rem' }}
+            onClick={() => handleLoadTestCase(3)}
+            title="Switch to Manager Digest and recalculate"
+          >
+            Recalculate
+          </button>
+        </div>
+      </div>
 
       {/* Main Tab Panels */}
       <main>
@@ -196,13 +241,15 @@ export function App() {
 
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: 'var(--surface-color)', padding: '2rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ margin: '0 0 1rem 0' }}>Reset Dataset?</h3>
-            <p style={{ margin: '0 0 1.5rem 0', color: 'var(--text-muted)' }}>This will revert to the initial 900+ seed submissions.</p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              <button className="btn btn-outline" onClick={() => setShowResetConfirm(false)}>Cancel</button>
-              <button className="btn btn-primary" style={{ background: '#ef4444', borderColor: '#ef4444', color: 'white' }} onClick={executeReset}>Reset Data</button>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.65)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--bg-card-border)', padding: '1.75rem', borderRadius: 'var(--radius-lg)', maxWidth: '420px', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+            <h3 style={{ margin: '0 0 0.75rem 0', fontSize: '1.15rem' }}>Reset sample data?</h3>
+            <p style={{ margin: '0 0 1.5rem 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+              This restores the original 900 current week and 650 prior week sample submissions.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+              <button className="btn btn-outline" onClick={() => setShowResetConfirm(false)}>Keep current data</button>
+              <button className="btn btn-primary" style={{ background: 'var(--rose)', borderColor: 'var(--rose)', color: 'white' }} onClick={executeReset}>Reset records</button>
             </div>
           </div>
         </div>

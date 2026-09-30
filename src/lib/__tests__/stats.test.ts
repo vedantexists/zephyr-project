@@ -8,12 +8,12 @@ describe('stats.ts calculateStats', () => {
       {
         id: '1', studentHash: 'hash1', ts: new Date().toISOString(),
         day: 'Mon', meal: 'Breakfast', rating: 5, quickTags: [],
-        status: 'valid', week: 'current'
+        status: 'valid', week: 'current', msToSubmit: 3200
       },
       {
         id: '2', studentHash: 'hash2', ts: new Date().toISOString(),
         day: 'Mon', meal: 'Breakfast', rating: 1, quickTags: [],
-        status: 'valid', week: 'current',
+        status: 'valid', week: 'current', msToSubmit: 4100,
         analysis: {
           engine: 'lightweight', language: 'English', pillars: [{ pillar: 'stockout', score: 1 }], tags: [], dishes: [], times: ['9:30 AM'], severity: 'high'
         }
@@ -24,7 +24,7 @@ describe('stats.ts calculateStats', () => {
       {
         id: '3', studentHash: 'hash3', ts: new Date().toISOString(),
         day: 'Mon', meal: 'Breakfast', rating: 3, quickTags: [],
-        status: 'valid', week: 'prior'
+        status: 'valid', week: 'prior', msToSubmit: 2800
       }
     ];
 

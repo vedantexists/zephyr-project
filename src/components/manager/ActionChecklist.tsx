@@ -20,14 +20,14 @@ export const ActionChecklist: React.FC<ActionChecklistProps> = ({ initialActions
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h4 style={{ fontSize: '0.95rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-          <ChefHat size={16} color="#34d399" />
-          Kitchen Shift Action Directives
+        <h4 style={{ fontSize: '1rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <ChefHat size={17} color="var(--emerald-light)" />
+          Kitchen shift action tasks
         </h4>
-        <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
-          {actions.filter(a => a.completed).length} / {actions.length} Completed
+        <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
+          {actions.filter(a => a.completed).length} of {actions.length} completed
         </span>
       </div>
 
