@@ -4,7 +4,6 @@ import { SpamShield } from './spamShield';
 import { buildExecutiveDigest } from './digest';
 import { extractEntities } from './entities';
 import { scorePillars } from './pillars';
-import { getActiveEngine } from '../ai/embedder';
 
 const CURRENT_WEEK_KEY = 'mess_digest_v3_current_week';
 const PRIOR_WEEK_KEY = 'mess_digest_v3_prior_week';
@@ -78,7 +77,7 @@ class Store {
       // Merge explicitly selected dishes with auto-detected ones (no duplicates)
       const allDishes = Array.from(new Set([...(payload.selectedDishes || []), ...entities.dishes]));
       analysis = {
-        engine: getActiveEngine(),
+        engine: 'lightweight',
         language: entities.language,
         pillars,
         tags: entities.tags,
@@ -122,7 +121,7 @@ class Store {
       this.cachedDigest = buildExecutiveDigest(
         this.currentWeek,
         this.priorWeek,
-        getActiveEngine()
+        'lightweight'
       );
     }
     return this.cachedDigest;
@@ -132,7 +131,7 @@ class Store {
     this.cachedDigest = buildExecutiveDigest(
       this.currentWeek,
       this.priorWeek,
-      getActiveEngine()
+      'lightweight'
     );
     return this.cachedDigest;
   }
