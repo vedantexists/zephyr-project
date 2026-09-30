@@ -4,7 +4,8 @@ import {
   Sparkles, 
   Sun, 
   Moon, 
-  RotateCcw
+  RotateCcw,
+  Zap
 } from 'lucide-react';
 import { FeedbackForm } from './components/student/FeedbackForm';
 import { DigestView } from './components/manager/DigestView';
@@ -19,6 +20,7 @@ export function App() {
   const [digest, setDigest] = useState<Digest>(store.getDigest());
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // Student form prefill for test cases
   const [prefill, setPrefill] = useState<{
@@ -63,17 +65,20 @@ export function App() {
   };
 
   const handleResetData = () => {
-    if (window.confirm('Reset dataset back to the initial 900+ seed submissions?')) {
-      store.resetToDefaultSeed();
-      setSubmissions(store.getCurrentWeek());
-      setDigest(store.getDigest());
-      setPrefill(null);
-      addToast({
-        type: 'warning',
-        title: 'Dataset Re-initialized',
-        message: 'Loaded default 900 current week + 650 prior week submissions.'
-      });
-    }
+    setShowResetConfirm(true);
+  };
+
+  const executeReset = () => {
+    store.resetToDefaultSeed();
+    setSubmissions(store.getCurrentWeek());
+    setDigest(store.getDigest());
+    setPrefill(null);
+    setShowResetConfirm(false);
+    addToast({
+      type: 'warning',
+      title: 'Dataset Re-initialized',
+      message: 'Loaded default 900 current week + 650 prior week submissions.'
+    });
   };
 
   const handleLoadTestCase = (caseNum: 1 | 2 | 3) => {
@@ -171,6 +176,7 @@ export function App() {
       <main>
         {activeTab === 'student' && (
           <FeedbackForm
+            key={prefill ? JSON.stringify(prefill) : 'student-form'}
             onSubmissionSuccess={handleSubmissionSuccess}
             prefill={prefill}
           />
@@ -187,6 +193,20 @@ export function App() {
 
       {/* Toast Messages */}
       <Toast toasts={toasts} onDismiss={id => setToasts(prev => prev.filter(t => t.id !== id))} />
+
+      {/* Reset Confirmation Modal */}
+      {showResetConfirm && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: 'var(--surface-color)', padding: '2rem', borderRadius: 'var(--radius-lg)', maxWidth: '400px', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ margin: '0 0 1rem 0' }}>Reset Dataset?</h3>
+            <p style={{ margin: '0 0 1.5rem 0', color: 'var(--text-muted)' }}>This will revert to the initial 900+ seed submissions.</p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button className="btn btn-outline" onClick={() => setShowResetConfirm(false)}>Cancel</button>
+              <button className="btn btn-primary" style={{ background: '#ef4444', borderColor: '#ef4444', color: 'white' }} onClick={executeReset}>Reset Data</button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

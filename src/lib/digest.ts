@@ -61,19 +61,19 @@ export function buildExecutiveDigest(
       let recommendedAction = 'Investigate kitchen shift preparation and temperature logs.';
       let medianTime: string | undefined;
 
-      if (day === 'Wed' && meal === 'Lunch') {
-        title = 'Wednesday Lunch: Chole Under-salted & 1:15 PM Rice Stockout';
-        recommendedAction = 'Recalibrate rice batch volume (+25kg) and standardize salt grammage per 100L chole with Head Cook.';
+      if (pillar === 'stockout') {
+        title = `${day} ${meal}: Rapid Item Stockout Detected`;
+        recommendedAction = 'Recalibrate batch volume and adjust preparation buffer times.';
         medianTime = stats.medianStockoutTime;
-      } else if (day === 'Tue' && meal === 'Dinner') {
-        title = 'Tuesday Dinner: Dal Dilution Variance & Cold Chapati Hardening';
-        recommendedAction = 'Enforce 70°C thermostat on chapati warmers post-8:30 PM; standardize dal-to-water dilution cards.';
+      } else if (pillar === 'taste') {
+        title = `${day} ${meal}: Taste & Preparation Quality Variance`;
+        recommendedAction = 'Standardize recipe cards and enforce temperature/taste checks pre-service.';
       } else if (pillar === 'hygiene') {
-        title = `${day} ${meal}: Dish Sanitization & Clean Tumbler Shortage`;
-        recommendedAction = 'Audit dishwasher rinse temperature and deploy replacement tumbler rack at Gate 2.';
+        title = `${day} ${meal}: Hygiene or Cleanliness Standards Failure`;
+        recommendedAction = 'Audit washing procedures and deploy immediate spot-checks.';
       } else if (pillar === 'delay') {
-        title = `${day} ${meal}: Peak Rush Queue Delays Exceeding 12 Minutes`;
-        recommendedAction = 'Add second tray restock station during peak rush window.';
+        title = `${day} ${meal}: Peak Rush Queue Delays`;
+        recommendedAction = 'Add additional service counters during peak rush window.';
       }
 
       rawClusters.push({
@@ -101,46 +101,30 @@ export function buildExecutiveDigest(
   const topClusters = rawClusters.slice(0, 3);
 
   // 2. Action items checklist
-  const actionChecklist: ActionItem[] = [
-    {
-      id: 'act-1',
-      role: 'Head Cook',
-      directive: 'Recalibrate rice batch volume (+25kg) and enforce 1:00 PM second-run buffer batch for Wednesday Lunch.',
-      urgency: 'Immediate',
-      completed: false
-    },
-    {
-      id: 'act-2',
-      role: 'Head Cook',
-      directive: 'Check bain-marie heating elements; verify chapatis stay ≥70°C through 9:30 PM for Tuesday Dinner.',
-      urgency: 'Immediate',
-      completed: false
-    },
-    {
-      id: 'act-3',
-      role: 'Store Incharge',
-      directive: 'Pre-portion salt and spice packs for chole batches to eliminate dilution variability.',
-      urgency: 'Today',
-      completed: false
-    },
-    {
-      id: 'act-4',
-      role: 'Cleaning Supervisor',
-      directive: 'Deploy 2 extra student helpers for tray turnaround at Counter 2 during 1:15-1:45 PM peak rush.',
-      urgency: 'Weekly Review',
-      completed: false
-    }
-  ];
+  const actionChecklist: ActionItem[] = topClusters.map((c, i) => ({
+    id: `act-${i + 1}`,
+    role: c.pillar === 'hygiene' ? 'Cleaning Supervisor' : 'Head Cook',
+    directive: c.recommendedAction,
+    urgency: c.severity === 'critical' ? 'Immediate' : 'Today',
+    completed: false
+  }));
 
   // 3. Positives
-  const positives = [
-    'Sunday Special Breakfast (Masala Dosa, Sambhar & Filter Coffee) scored 4.8/5 with 88% approval.',
-    'Zero critical hygiene foreign-object reports recorded for 6 consecutive days.',
-    'Snacks counter queuing stabilized under 5 minutes after layout separation.'
-  ];
+  const sortedMatrix = [...stats.matrix].sort((a, b) => b.avgRating - a.avgRating);
+  const best = sortedMatrix.filter(m => m.count >= 5);
+  const positives = best.slice(0, 3).map(m => 
+    `${m.day} ${m.meal} was highly rated, scoring ${m.avgRating}/5 across ${m.count} reports.`
+  );
+  if (positives.length === 0) {
+    positives.push('Overall baseline quality maintained without severe system-wide failures.');
+  }
 
   // 4. Headline
-  const headline = `Weekly campus satisfaction stabilized at ${stats.currentWeekAvg}/5 (+${stats.wowDelta} WoW); primary bottleneck: Wednesday lunch stockouts (${topClusters[0]?.count || 42} reports) followed by Tuesday dinner chapati cooling.`;
+  const dayNames: Record<Day, string> = {
+    Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday'
+  };
+  const topClusterDesc = topClusters[0] ? `${dayNames[topClusters[0].day]} ${topClusters[0].meal.toLowerCase()} ${topClusters[0].pillar}s` : 'None detected';
+  const headline = `Weekly campus satisfaction stabilized at ${stats.currentWeekAvg}/5 (+${stats.wowDelta} WoW); primary bottleneck: ${topClusterDesc} (${topClusters[0]?.count || 0} reports).`;
 
   // 5. Word count and read time budget (Target 250-350 words, readSeconds = words / 200 * 60)
   const fullText = [
@@ -164,7 +148,7 @@ export function buildExecutiveDigest(
     totalSubmissions: stats.currentWeekTotal,
     redAlertsCount: stats.anomalies.length,
     blockedCount,
-    readTimeSeconds: Math.min(readTimeSeconds, 110), // strictly < 120s!
+    readTimeSeconds,
     wordCount: words,
     topClusters,
     anomalies: stats.anomalies,

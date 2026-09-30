@@ -83,7 +83,7 @@ export function embedNgram(text: string): Float32Array {
 }
 
 export class NgramEmbedder implements Embedder {
-  name: 'lightweight' = 'lightweight';
+  readonly name = 'lightweight';
 
   async embed(texts: string[]): Promise<Float32Array[]> {
     return texts.map(t => embedNgram(t));

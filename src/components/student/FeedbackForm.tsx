@@ -25,22 +25,23 @@ const MEAL_MENU: Record<Meal, string[]> = {
   Dinner:    ['Dal Fry', 'Chapati', 'Jeera Rice', 'Mixed Veg', 'Paneer Curry', 'Curd', 'Salad', 'Sweet (Kheer)'],
 };
 
+const getAutoMeal = (): Meal => {
+  const h = new Date().getHours();
+  if (h >= 7 && h < 11) return 'Breakfast';
+  if (h >= 11 && h < 16) return 'Lunch';
+  if (h >= 16 && h < 19) return 'Snacks';
+  return 'Dinner';
+};
+
+const getAutoDay = (): Day => {
+  const map: Day[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return map[new Date().getDay()];
+};
+
 export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmissionSuccess,
   prefill
 }) => {
-  const getAutoMeal = (): Meal => {
-    const h = new Date().getHours();
-    if (h >= 7 && h < 11) return 'Breakfast';
-    if (h >= 11 && h < 16) return 'Lunch';
-    if (h >= 16 && h < 19) return 'Snacks';
-    return 'Dinner';
-  };
-
-  const getAutoDay = (): Day => {
-    const map: Day[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return map[new Date().getDay()];
-  };
 
   const [rawRoll, setRawRoll] = useState<string>('23CS104');
   const [studentHash, setStudentHash] = useState<string>('7a9f02c1b84e');
@@ -60,25 +61,14 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const [blockedAlert, setBlockedAlert] = useState<string | null>(null);
   const [successSub, setSuccessSub] = useState<Submission | null>(null);
 
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Hash student roll number
   useEffect(() => {
     hashStudentRoll(rawRoll).then(h => setStudentHash(h));
   }, [rawRoll]);
 
-  // Handle prefill updates (from test case launcher)
-  useEffect(() => {
-    if (prefill) {
-      if (prefill.meal) setMeal(prefill.meal);
-      if (prefill.day) setDay(prefill.day);
-      if (prefill.rating) setRating(prefill.rating);
-      if (prefill.quickTags) setQuickTags(prefill.quickTags);
-      if (prefill.comment !== undefined) setComment(prefill.comment);
-      setBlockedAlert(null);
-      setSuccessSub(null);
-    }
-  }, [prefill]);
+  // Prefill is now handled via a key reset on the component mount in App.tsx
 
   // Stopwatch ticking
   useEffect(() => {

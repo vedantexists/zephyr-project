@@ -125,13 +125,13 @@ export class SpamShield {
   }
 
   static getBlockedCount(): number {
-    if (typeof localStorage === 'undefined') return 14;
+    if (typeof localStorage === 'undefined') return 0;
     const raw = localStorage.getItem(BLOCKED_COUNT_KEY);
-    return raw ? parseInt(raw, 10) : 14; // Default to 14 from seed brief
+    return raw ? parseInt(raw, 10) : 0;
   }
 
   static incrementBlockedCount(): number {
-    if (typeof localStorage === 'undefined') return 15;
+    if (typeof localStorage === 'undefined') return 1;
     const current = this.getBlockedCount() + 1;
     localStorage.setItem(BLOCKED_COUNT_KEY, current.toString());
     return current;
@@ -140,7 +140,7 @@ export class SpamShield {
   static reset(): void {
     if (typeof localStorage === 'undefined') return;
     localStorage.removeItem(HISTORY_KEY);
-    localStorage.setItem(BLOCKED_COUNT_KEY, '14');
+    localStorage.setItem(BLOCKED_COUNT_KEY, '0');
   }
 
   private static getRecords(): ShieldRecord[] {

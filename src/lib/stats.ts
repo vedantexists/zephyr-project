@@ -112,6 +112,29 @@ export function calculateStats(
   const matrix: MealDayCell[] = [];
   const anomalies: StatsSummary['anomalies'] = [];
 
+  // Calculate median stockout time
+  let medianStockoutTime = 'None';
+  if (stockoutTimes.length > 0) {
+    const toMins = (t: string) => {
+      const match = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (!match) return 0;
+      let h = parseInt(match[1], 10);
+      const m = parseInt(match[2], 10);
+      const isPM = match[3].toUpperCase() === 'PM';
+      if (isPM && h !== 12) h += 12;
+      if (!isPM && h === 12) h = 0;
+      return h * 60 + m;
+    };
+    const sortedMins = stockoutTimes.map(toMins).sort((a, b) => a - b);
+    const medianMins = sortedMins[Math.floor(sortedMins.length / 2)];
+    const h = Math.floor(medianMins / 60);
+    const m = medianMins % 60;
+    const isPM = h >= 12;
+    const displayH = h % 12 === 0 ? 12 : h % 12;
+    const displayM = m.toString().padStart(2, '0');
+    medianStockoutTime = `${displayH}:${displayM} ${isPM ? 'PM' : 'AM'}`;
+  }
+
   for (const key of Object.keys(matrixAcc)) {
     const item = matrixAcc[key];
     const avg = item.count > 0 ? Number((item.sum / item.count).toFixed(2)) : currentAvg;
@@ -127,18 +150,12 @@ export function calculateStats(
     });
 
     if (isBelow) {
-      let issue = 'Significant rating depression detected';
-      if (item.day === 'Wed' && item.meal === 'Lunch') {
-        issue = 'Chole under-salted & 1:15 PM rice stockout cluster (42 reports)';
-      } else if (item.day === 'Tue' && item.meal === 'Dinner') {
-        issue = 'Dal over-dilution & cold chapati hardening post-8:30 PM (24 reports)';
-      }
       anomalies.push({
         day: item.day,
         meal: item.meal,
         avgRating: avg,
         deltaFromMean: delta,
-        issue
+        issue: `${item.day} ${item.meal} rating dipped to ${avg} (below mean ${currentAvg})`
       });
     }
   }
@@ -152,6 +169,6 @@ export function calculateStats(
     dayMeans,
     matrix,
     anomalies,
-    medianStockoutTime: stockoutTimes.length > 0 ? '1:15 PM' : '1:20 PM'
+    medianStockoutTime
   };
 }
