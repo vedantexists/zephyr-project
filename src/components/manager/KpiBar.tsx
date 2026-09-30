@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, AlertTriangle, ShieldCheck, Clock, Users, Star } from 'lucide-react';
+import { TrendingUp, AlertTriangle, ShieldCheck, Users, Star } from 'lucide-react';
 import type { Digest } from '../../types';
 
 interface KpiBarProps {
@@ -79,25 +79,6 @@ export const KpiBar: React.FC<KpiBarProps> = ({ digest }) => {
         </div>
         <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
           Protected rating integrity from vote skewing
-        </span>
-      </div>
-
-      {/* Computed Read Time */}
-      <div className="glass-panel kpi-card">
-        <div className="kpi-header">
-          <span>Manager Read Time</span>
-          <Clock size={15} color="#38bdf8" />
-        </div>
-        <div className="kpi-value-row">
-          <span className="kpi-value" style={{ color: '#38bdf8' }}>
-            ~{digest.readTimeSeconds}s
-          </span>
-          <span className="badge badge-emerald" style={{ alignSelf: 'center', marginLeft: '0.5rem' }}>
-            &lt; 2 min
-          </span>
-        </div>
-        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-          Word budget: {digest.wordCount} words (at 200 wpm)
         </span>
       </div>
     </div>

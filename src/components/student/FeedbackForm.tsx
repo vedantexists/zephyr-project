@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Clock, Send, CheckCircle2, ShieldAlert, RotateCcw, Tag, Hash, Zap } from 'lucide-react';
+import { Send, CheckCircle2, ShieldAlert, RotateCcw, Tag, Hash, UtensilsCrossed } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { Meal, Day, Submission } from '../../types';
 import { hashStudentRoll } from '../../lib/spamShield';
@@ -15,6 +15,15 @@ interface FeedbackFormProps {
     quickTags?: string[];
   } | null;
 }
+
+// Dishes served per meal window (today's sample menu).
+// In a production build this would come from an API / mess committee CMS.
+const MEAL_MENU: Record<Meal, string[]> = {
+  Breakfast: ['Poha', 'Upma', 'Idli', 'Masala Dosa', 'Sambar', 'Bread & Butter', 'Filter Coffee', 'Boiled Egg'],
+  Lunch:     ['Dal Tadka', 'Steamed Rice', 'Chapati', 'Chole', 'Aloo Gobi', 'Paneer Butter Masala', 'Jeera Rice', 'Salad', 'Curd'],
+  Snacks:    ['Samosa', 'Bread Pakoda', 'Vada Pav', 'Poha', 'Tea', 'Coffee', 'Biscuits'],
+  Dinner:    ['Dal Fry', 'Chapati', 'Jeera Rice', 'Mixed Veg', 'Paneer Curry', 'Curd', 'Salad', 'Sweet (Kheer)'],
+};
 
 export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   onSubmissionSuccess,
@@ -40,6 +49,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
   const [rating, setRating] = useState<1 | 2 | 3 | 4 | 5 | null>(prefill?.rating || null);
   const [quickTags, setQuickTags] = useState<string[]>(prefill?.quickTags || []);
   const [comment, setComment] = useState<string>(prefill?.comment || '');
+  const [selectedDishes, setSelectedDishes] = useState<string[]>([]);
 
   // Live stopwatch (<10s constraint)
   const [timerStarted, setTimerStarted] = useState<boolean>(false);
@@ -105,6 +115,19 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     }
   };
 
+  const handleChangeMeal = (m: Meal) => {
+    startStopwatchIfNeeded();
+    setMeal(m);
+    setSelectedDishes([]); // clear dish selection when meal window changes
+  };
+
+  const toggleDish = (dish: string) => {
+    startStopwatchIfNeeded();
+    setSelectedDishes(prev =>
+      prev.includes(dish) ? prev.filter(d => d !== dish) : [...prev, dish]
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!rating) {
@@ -123,7 +146,8 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
       rating,
       quickTags,
       comment: comment.trim() || undefined,
-      msToSubmit: duration
+      msToSubmit: duration,
+      selectedDishes
     });
 
     if (!result.allowed) {
@@ -152,6 +176,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     setRating(null);
     setQuickTags([]);
     setComment('');
+    setSelectedDishes([]);
     setTimerStarted(false);
     setElapsedMs(0);
     setFinalSubmitMs(null);
@@ -177,24 +202,10 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     <div style={{ maxWidth: '580px', margin: '0 auto', width: '100%' }}>
       <div className="glass-panel" style={{ padding: '1.75rem' }}>
         
-        {/* Header & Stopwatch */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.6rem' }}>
-          <div>
-            <span className="badge badge-emerald" style={{ marginBottom: '0.2rem' }}>
-              <Zap size={12} />
-              &lt;10s Student Flow
-            </span>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Student Meal Feedback</h2>
-          </div>
-
-          <div 
-            className={`stopwatch-hud ${elapsedMs > 10000 ? 'exceeded' : elapsedMs > 7000 ? 'warning' : ''}`}
-            title="Stopwatch verification of the <10s input constraint"
-          >
-            <Clock size={14} className={timerStarted && !finalSubmitMs ? 'pulse-dot' : ''} />
-            <span>{secondsDisplay}s</span>
-            <span style={{ fontSize: '0.7rem', opacity: 0.8 }}>/ 10.0s target</span>
-          </div>
+        {/* Header */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Student Meal Feedback</h2>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Rate your meal and help us improve campus dining.</p>
         </div>
 
         {/* Spam Shield Block Alert */}
@@ -234,15 +245,11 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#34d399' }}>
               <CheckCircle2 size={18} />
-              <strong style={{ fontSize: '0.95rem' }}>
-                Submitted in {(successSub.msToSubmit / 1000).toFixed(1)}s!
-              </strong>
-              <span className="badge badge-emerald" style={{ marginLeft: 'auto' }}>
-                Constraint Satisfied
-              </span>
+              <strong style={{ fontSize: '0.95rem' }}>Feedback submitted!</strong>
+              <span className="badge badge-emerald" style={{ marginLeft: 'auto' }}>Logged</span>
             </div>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Feedback verified and hashed. Digest recalculation triggered in the background.
+              Thank you — your feedback helps improve campus dining for everyone.
             </p>
             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.2rem' }}>
               <button className="btn btn-outline btn-sm" onClick={handleReset}>
@@ -254,7 +261,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
-          {/* Meal Override Row */}
+          {/* Meal Window Row */}
           <div>
             <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Meal Window (Auto-selected):
@@ -264,10 +271,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 <button
                   type="button"
                   key={m}
-                  onClick={() => {
-                    startStopwatchIfNeeded();
-                    setMeal(m);
-                  }}
+                  onClick={() => handleChangeMeal(m)}
                   className={`btn ${meal === m ? 'btn-primary' : 'btn-outline'}`}
                   style={{ padding: '0.45rem 0.2rem', fontSize: '0.8rem', justifyContent: 'center' }}
                 >
@@ -275,6 +279,45 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Dish Picker — today's menu for the selected meal */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Today's {meal} Menu:
+              </label>
+              {selectedDishes.length > 0 && (
+                <span style={{ fontSize: '0.7rem', color: 'var(--primary-light)', fontWeight: 600 }}>
+                  {selectedDishes.length} selected
+                </span>
+              )}
+            </div>
+            <div className="tags-cloud">
+              {MEAL_MENU[meal].map((dish) => {
+                const isSelected = selectedDishes.includes(dish);
+                return (
+                  <button
+                    type="button"
+                    key={dish}
+                    onClick={() => toggleDish(dish)}
+                    className={`tag-pill ${isSelected ? 'active' : ''}`}
+                    style={{
+                      borderColor: isSelected ? 'var(--emerald)' : undefined,
+                      background: isSelected ? 'rgba(16,185,129,0.12)' : undefined
+                    }}
+                  >
+                    <UtensilsCrossed size={11} />
+                    {dish}
+                  </button>
+                );
+              })}
+            </div>
+            {selectedDishes.length > 0 && (
+              <p style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '0.3rem' }}>
+                Rating applies to: <em>{selectedDishes.join(', ')}</em>
+              </p>
+            )}
           </div>
 
           {/* 5-Tap Rating Target Scale */}
@@ -369,30 +412,25 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
             />
           </div>
 
-          {/* Student Roll Number & Anonymization */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', borderTop: '1px solid var(--bg-card-border)', paddingTop: '0.6rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              <Hash size={13} />
-              <span>Roll No:</span>
-              <input
-                type="text"
-                value={rawRoll}
-                onChange={e => setRawRoll(e.target.value)}
-                style={{
-                  padding: '0.2rem 0.4rem',
-                  fontSize: '0.78rem',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-surface-elevated)',
-                  border: '1px solid var(--bg-card-border)',
-                  color: 'var(--text-main)',
-                  width: '90px'
-                }}
-              />
-            </div>
-
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }} title="SHA-256 hash stored, raw roll never exposed">
-              Hash: {studentHash}
-            </span>
+          {/* Student Roll Number — anonymous, no hash shown */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderTop: '1px solid var(--bg-card-border)', paddingTop: '0.6rem' }}>
+            <Hash size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+            <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', flexShrink: 0 }}>Roll No:</label>
+            <input
+              type="text"
+              value={rawRoll}
+              onChange={e => setRawRoll(e.target.value)}
+              style={{
+                padding: '0.2rem 0.4rem',
+                fontSize: '0.78rem',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--bg-surface-elevated)',
+                border: '1px solid var(--bg-card-border)',
+                color: 'var(--text-main)',
+                width: '90px'
+              }}
+            />
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>Your identity is anonymised before storage.</span>
           </div>
 
           {/* Submit Button */}

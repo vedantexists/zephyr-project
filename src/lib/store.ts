@@ -54,6 +54,7 @@ class Store {
     quickTags: string[];
     comment?: string;
     msToSubmit: number;
+    selectedDishes?: string[];
   }): { allowed: boolean; submission?: Submission; reason?: string } {
     // 1. Spam Shield Validation
     const validation = SpamShield.validate(
@@ -71,15 +72,17 @@ class Store {
 
     // 2. Synchronous NLP extraction (<5ms)
     let analysis: Submission['analysis'] = undefined;
-    if (payload.comment || payload.quickTags.length > 0) {
+    if (payload.comment || payload.quickTags.length > 0 || (payload.selectedDishes && payload.selectedDishes.length > 0)) {
       const entities = extractEntities(payload.comment, payload.quickTags);
       const pillars = scorePillars(payload.comment || '', payload.quickTags);
+      // Merge explicitly selected dishes with auto-detected ones (no duplicates)
+      const allDishes = Array.from(new Set([...(payload.selectedDishes || []), ...entities.dishes]));
       analysis = {
         engine: getActiveEngine(),
         language: entities.language,
         pillars,
         tags: entities.tags,
-        dishes: entities.dishes,
+        dishes: allDishes,
         times: entities.times,
         severity: entities.severity
       };

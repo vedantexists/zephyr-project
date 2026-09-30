@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
   UtensilsCrossed, 
-  Zap, 
   Sparkles, 
   Sun, 
   Moon, 
@@ -9,19 +8,15 @@ import {
 } from 'lucide-react';
 import { FeedbackForm } from './components/student/FeedbackForm';
 import { DigestView } from './components/manager/DigestView';
-import { DemoPanel } from './components/DemoPanel';
-import { EngineBadge } from './components/EngineBadge';
 import { Toast, type ToastMessage } from './components/Toast';
 import { store } from './lib/store';
-import { getActiveEngine, subscribeEngineChange } from './ai/embedder';
 import { TEST_CASE_1_SUBMISSION, TEST_CASE_2_SUBMISSION } from './data/seed';
-import type { Submission, Digest, Embedder } from './types';
+import type { Submission, Digest } from './types';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<'student' | 'manager'>('manager');
   const [submissions, setSubmissions] = useState<Submission[]>(store.getCurrentWeek());
   const [digest, setDigest] = useState<Digest>(store.getDigest());
-  const [engine, setEngine] = useState<Embedder['name']>(getActiveEngine());
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -33,11 +28,6 @@ export function App() {
     comment?: string;
     quickTags?: string[];
   } | null>(null);
-
-  // Subscribe to engine changes
-  useEffect(() => {
-    return subscribeEngineChange((newEngine) => setEngine(newEngine));
-  }, []);
 
   // Theme attribute
   useEffect(() => {
@@ -52,13 +42,13 @@ export function App() {
     }, 4500);
   };
 
-  const handleSubmissionSuccess = (newSub: Submission) => {
+  const handleSubmissionSuccess = (_newSub: Submission) => {
     setSubmissions(store.getCurrentWeek());
     setDigest(store.refreshDigest());
     addToast({
       type: 'success',
-      title: 'Feedback Verified & Logged',
-      message: `Completed in ${(newSub.msToSubmit / 1000).toFixed(1)}s (<10s constraint met). Digest updated.`
+      title: 'Feedback received — thank you!',
+      message: 'Your rating has been logged and will inform tomorrow\'s kitchen briefing.'
     });
   };
 
@@ -67,8 +57,8 @@ export function App() {
     setDigest(updated);
     addToast({
       type: 'success',
-      title: 'Digest Recalculated',
-      message: `Synthesized across ${updated.totalSubmissions} meal submissions. Read time: ~${updated.readTimeSeconds}s.`
+      title: 'Digest Updated',
+      message: `Analysed ${updated.totalSubmissions} meal responses this week.`
     });
   };
 
@@ -159,8 +149,6 @@ export function App() {
 
         {/* Action Controls */}
         <div className="nav-actions">
-          <EngineBadge engine={engine} />
-
           <button
             className="btn btn-outline btn-sm"
             onClick={handleResetData}
@@ -178,9 +166,6 @@ export function App() {
           </button>
         </div>
       </header>
-
-      {/* Demo Panel Quick-Launcher for Judges */}
-      <DemoPanel onLoadTestCase={handleLoadTestCase} />
 
       {/* Main Tab Panels */}
       <main>

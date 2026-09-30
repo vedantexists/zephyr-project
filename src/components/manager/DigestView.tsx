@@ -63,14 +63,14 @@ _Generated via ZephyrMess AI Dining Intelligence_`;
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
               <span className="badge badge-emerald">
-                <Sparkles size={11} /> 2-Minute Executive Digest
+                <Sparkles size={11} /> Weekly Dining Summary
               </span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                Generated at {digest.generatedAt}
+                Updated {digest.generatedAt}
               </span>
             </div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: 800 }}>
-              Campus Dining Daily Synthesis
+              Campus Dining Weekly Report
             </h2>
           </div>
 
