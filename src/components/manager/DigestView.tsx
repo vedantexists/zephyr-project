@@ -58,10 +58,21 @@ Generated via ZephyrMess Dining Platform`;
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       
       {/* 1. Header & Headline Card */}
-      <div className="glass-panel" style={{ padding: '1.5rem 1.75rem' }}>
+      <div className="glass-panel" style={{ padding: '1.6rem 1.85rem', position: 'relative', overflow: 'hidden' }}>
+        {/* Decorative gradient strip at top */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '3px',
+          background: 'var(--primary-gradient)',
+          opacity: 0.85
+        }} />
+
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.85rem', marginBottom: '1.2rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
               <span className="badge badge-emerald">
                 <Sparkles size={11} /> Weekly shift summary
               </span>
@@ -69,7 +80,13 @@ Generated via ZephyrMess Dining Platform`;
                 Updated at {digest.generatedAt}
               </span>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>
+            <h2 style={{ 
+              fontSize: '1.5rem', 
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, var(--text-main) 40%, var(--primary-light) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
               Weekly dining digest
             </h2>
           </div>
@@ -104,22 +121,38 @@ Generated via ZephyrMess Dining Platform`;
           </div>
         </div>
 
-        {/* Headline (One sentence, computed facts) */}
+        {/* Headline Card */}
         <div style={{ 
-          padding: '1rem 1.25rem',
+          padding: '1.1rem 1.3rem',
           borderRadius: 'var(--radius-md)',
-          background: 'var(--primary-subtle)',
-          borderLeft: '4px solid var(--primary-light)',
+          background: 'linear-gradient(135deg, var(--primary-subtle) 0%, rgba(168, 85, 247, 0.08) 100%)',
+          borderLeft: '4px solid',
+          borderImage: 'var(--primary-gradient) 1',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.85rem'
+          gap: '0.85rem',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
-          <ChefHat size={22} color="var(--primary-light)" style={{ flexShrink: 0 }} />
-          <div>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              Shift briefing summary:
+          {/* Soft glow behind icon */}
+          <div style={{
+            position: 'absolute',
+            left: '-10px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '60px',
+            height: '60px',
+            background: 'var(--primary-glow)',
+            borderRadius: '50%',
+            filter: 'blur(20px)',
+            pointerEvents: 'none'
+          }} />
+          <ChefHat size={24} color="var(--primary-light)" style={{ flexShrink: 0, position: 'relative', zIndex: 1 }} />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Shift briefing summary
             </span>
-            <p style={{ fontSize: '0.94rem', fontWeight: 600, color: 'var(--text-main)', marginTop: '0.15rem', lineHeight: 1.45 }}>
+            <p style={{ fontSize: '0.94rem', fontWeight: 600, color: 'var(--text-main)', marginTop: '0.2rem', lineHeight: 1.5 }}>
               {digest.headline}
             </p>
           </div>
@@ -133,9 +166,9 @@ Generated via ZephyrMess Dining Platform`;
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '1.25rem' }}>
         
         {/* Top 3 Grievance Clusters */}
-        <div className="glass-panel" style={{ padding: '1.35rem', display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+        <div className="glass-panel" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h4 style={{ fontSize: '1rem', fontWeight: 800 }}>
+            <h4 style={{ fontSize: '1.05rem', fontWeight: 800 }}>
               Priority kitchen bottlenecks
             </h4>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
@@ -151,23 +184,37 @@ Generated via ZephyrMess Dining Platform`;
         </div>
 
         {/* Action Checklist & Anomalies */}
-        <div className="glass-panel" style={{ padding: '1.35rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <div className="glass-panel" style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Action Checklist */}
           <ActionChecklist initialActions={digest.actionChecklist} />
 
           {/* 4. Anomalies Card */}
           {digest.anomalies.length > 0 && (
             <div style={{ 
-              background: 'var(--rose-subtle)', 
-              border: '1px solid rgba(244, 63, 94, 0.3)', 
+              background: 'linear-gradient(135deg, var(--rose-subtle) 0%, rgba(244, 63, 94, 0.05) 100%)', 
+              border: '1px solid rgba(244, 63, 94, 0.25)', 
               borderRadius: 'var(--radius-md)', 
-              padding: '0.95rem 1.1rem' 
+              padding: '1rem 1.15rem',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--rose-light)', marginBottom: '0.45rem' }}>
+              {/* Rose glow accent */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '80px',
+                height: '80px',
+                background: 'var(--rose-glow)',
+                borderRadius: '50%',
+                filter: 'blur(25px)',
+                pointerEvents: 'none'
+              }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--rose-light)', marginBottom: '0.5rem', position: 'relative' }}>
                 <AlertTriangle size={15} />
                 <strong style={{ fontSize: '0.86rem' }}>Low-scoring meal services (ratings &gt;0.6 below weekly average)</strong>
               </div>
-              <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+              <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.35rem', position: 'relative' }}>
                 {digest.anomalies.map((anom, idx) => (
                   <li key={idx}>
                     <strong style={{ color: 'var(--text-main)' }}>{anom.day} {anom.meal}</strong> ({anom.avgRating.toFixed(1)}/5.0, {anom.deltaFromMean} below mean): {anom.issue}
@@ -179,16 +226,30 @@ Generated via ZephyrMess Dining Platform`;
 
           {/* 6. Positives Card */}
           <div style={{ 
-            background: 'var(--emerald-subtle)', 
-            border: '1px solid rgba(16, 185, 129, 0.3)', 
+            background: 'linear-gradient(135deg, var(--emerald-subtle) 0%, rgba(16, 185, 129, 0.05) 100%)', 
+            border: '1px solid rgba(16, 185, 129, 0.25)', 
             borderRadius: 'var(--radius-md)', 
-            padding: '0.95rem 1.1rem' 
+            padding: '1rem 1.15rem',
+            position: 'relative',
+            overflow: 'hidden'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--emerald-light)', marginBottom: '0.45rem' }}>
+            {/* Emerald glow accent */}
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              left: '-10px',
+              width: '80px',
+              height: '80px',
+              background: 'var(--emerald-glow)',
+              borderRadius: '50%',
+              filter: 'blur(25px)',
+              pointerEvents: 'none'
+            }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--emerald-light)', marginBottom: '0.5rem', position: 'relative' }}>
               <CheckCircle2 size={15} />
               <strong style={{ fontSize: '0.86rem' }}>Kitchen commendations</strong>
             </div>
-            <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.3rem', position: 'relative' }}>
               {digest.positives.map((p, idx) => (
                 <li key={idx}>{p}</li>
               ))}

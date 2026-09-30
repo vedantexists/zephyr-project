@@ -18,7 +18,11 @@ export const KpiBar: React.FC<KpiBarProps> = ({ digest }) => {
           <Star size={16} color="var(--saffron-light)" />
         </div>
         <div className="kpi-value-row">
-          <span className="kpi-value">{digest.overallRating.toFixed(1)}</span>
+          <span className="kpi-value" style={{
+            background: 'linear-gradient(135deg, #fbbf24 20%, #f59e0b 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>{digest.overallRating.toFixed(1)}</span>
           <span style={{ fontSize: '0.95rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>/ 5.0</span>
           <span className={`kpi-trend ${isPositiveWoW ? 'positive' : 'negative'}`} style={{ marginLeft: 'auto' }}>
             {isPositiveWoW ? <TrendingUp size={14} /> : <TrendingDown size={14} />} 
@@ -54,7 +58,11 @@ export const KpiBar: React.FC<KpiBarProps> = ({ digest }) => {
           <AlertTriangle size={16} color="var(--rose-light)" />
         </div>
         <div className="kpi-value-row">
-          <span className="kpi-value" style={{ color: 'var(--rose-light)' }}>
+          <span className="kpi-value" style={{
+            background: 'linear-gradient(135deg, #fb7185 20%, #f43f5e 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             {digest.redAlertsCount}
           </span>
           <span className="badge badge-rose" style={{ alignSelf: 'center', marginLeft: '0.5rem' }}>
@@ -73,7 +81,11 @@ export const KpiBar: React.FC<KpiBarProps> = ({ digest }) => {
           <ShieldCheck size={16} color="var(--emerald-light)" />
         </div>
         <div className="kpi-value-row">
-          <span className="kpi-value" style={{ color: 'var(--emerald-light)' }}>
+          <span className="kpi-value" style={{
+            background: 'linear-gradient(135deg, #34d399 20%, #10b981 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             {digest.blockedCount}
           </span>
           <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', alignSelf: 'center' }}>
