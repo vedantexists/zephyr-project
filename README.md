@@ -70,14 +70,14 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Verification & Testing
 
-Run the automated test suite (18 unit tests covering seed calibration, NLP classification, and digest word budget):
+Run the automated test suite (24 unit tests across 5 files covering seed calibration, NLP classification, entity extraction, statistics, and digest word budget):
 
 ```bash
 npm test
 ```
 
 ### Reproducing Day 2 Problem Test Cases:
-Click the **Day 2 Judge Test Presets** buttons at the top of the interface:
+Click the **Judge presets** buttons at the top of the interface:
 - **Case #1 (Tuesday Dinner):**
   - Input: `"Dal was too watery and chapati was cold and hard after 8:30."` (Rating: 2/5)
   - Verified Output: Tagged `[Taste: Poor, Temp: Cold]`, clustered with 24 Tuesday dinner reports, dishes identified as Dal & Chapati, time extracted as `after 8:30`.
