@@ -184,10 +184,6 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
     'Loved It'
   ];
 
-  const secondsDisplay = finalSubmitMs 
-    ? (finalSubmitMs / 1000).toFixed(1) 
-    : (elapsedMs / 1000).toFixed(1);
-
   return (
     <div style={{ maxWidth: '580px', margin: '0 auto', width: '100%' }}>
       <div className="glass-panel" style={{ padding: '1.75rem' }}>
@@ -430,7 +426,7 @@ export const FeedbackForm: React.FC<FeedbackFormProps> = ({
             style={{ width: '100%', padding: '0.85rem', fontSize: '0.95rem', fontWeight: 700 }}
           >
             <Send size={16} />
-            <span>Submit Feedback ({secondsDisplay}s)</span>
+            <span>Submit Feedback</span>
           </button>
         </form>
 
