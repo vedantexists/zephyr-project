@@ -1,0 +1,24 @@
+/* Additional animations and component helpers */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cluster-card, .pillar-card, .kpi-card {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.cluster-card:hover, .pillar-card:hover, .kpi-card:hover {
+  transform: translateY(-2px);
+}
