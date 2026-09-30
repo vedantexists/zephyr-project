@@ -136,19 +136,19 @@ export function App() {
           <button
             className={`nav-tab-btn ${activeTab === 'student' ? 'active' : ''}`}
             onClick={() => setActiveTab('student')}
-            title="Student Feedback (<10s Flow)"
+            title="Student Feedback"
           >
             <Zap size={15} />
-            <span>Student Rating (&lt;10s)</span>
+            <span>Student Rating</span>
           </button>
 
           <button
             className={`nav-tab-btn ${activeTab === 'manager' ? 'active' : ''}`}
             onClick={() => setActiveTab('manager')}
-            title="Manager 2-Minute Executive Digest"
+            title="Manager Executive Digest"
           >
             <Sparkles size={15} />
-            <span>Manager Digest (~2min)</span>
+            <span>Manager Digest</span>
           </button>
         </nav>
 
