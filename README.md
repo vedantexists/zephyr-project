@@ -93,7 +93,7 @@ Click the **Day 2 Judge Test Presets** buttons at the top of the interface:
 ## Participant Info
 
 - **Name:** Vedant
-- **College ID:** [Your College Roll / ID Number]
+- **College ID:** 
 - **Day:** Day 2 (30th September 2026)
 - **Live URL (if deployed):** [Optional deployed link]
 - **Demo Video (if recorded):** [Optional Google Drive link]
