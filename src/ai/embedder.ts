@@ -22,13 +22,14 @@ export function subscribeEngineChange(listener: EngineChangeListener): () => voi
 
 export async function setEmbedderEngine(engine: 'lightweight' | 'semantic'): Promise<void> {
   if (engine === 'semantic') {
-    // Attempt lazy loading semantic embedder if available
     try {
-      const { TransformerEmbedder } = await import('./transformerEmbedder');
-      semanticEmbedderInstance = new TransformerEmbedder();
+      // Dynamic import to allow optional transformerEmbedder spike
+      // @ts-ignore
+      const mod = await import('./transformerEmbedder');
+      semanticEmbedderInstance = new mod.TransformerEmbedder();
       activeEngine = 'semantic';
     } catch (e) {
-      console.warn('Semantic embedder not available or failed to load. Staying on lightweight:', e);
+      console.warn('Semantic embedder not installed or failed to load. Using lightweight:', e);
       activeEngine = 'lightweight';
     }
   } else {
